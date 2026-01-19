@@ -15,6 +15,42 @@ ssh david@100.112.16.24
 
 ---
 
+## Crear Usuario para Despliegue
+
+Crear usuario que pueda subir apps a producción sin acceso completo al sistema.
+
+```bash
+# 1. Crear usuario
+sudo adduser invitado
+# Ingresa contraseña y datos (Enter para saltar opcionales)
+
+# 2. Agregar al grupo www-data
+sudo usermod -aG www-data invitado
+
+# 3. Permitir escritura en /var/www
+sudo chmod -R g+w /var/www
+
+# 4. Permitir reiniciar servicios (ejecutar sudo visudo y agregar al final):
+invitado ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart nginx, /usr/bin/systemctl restart php8.3-fpm, /usr/bin/systemctl reload nginx
+```
+
+**El usuario puede:**
+- Crear carpetas en `/var/www/`
+- Desplegar apps (composer, npm, etc.)
+- Reiniciar nginx y php-fpm
+
+**El usuario NO puede:**
+- Instalar programas del sistema
+- Modificar configs de otros usuarios
+- Usar sudo para otras cosas
+
+**Conexión del invitado:**
+```bash
+ssh invitado@100.112.16.24
+```
+
+---
+
 ## Desplegar Nueva App
 
 ```bash
@@ -126,12 +162,46 @@ sudo tail -f /var/log/nginx/error.log
 # Logs Tunnel
 sudo journalctl -u cloudflared -f
 
-# Backup manual
+# Backup manual BD
 ~/backup-db.sh
 
 # Temperatura
 sensors
 ```
+
+---
+
+## Timeshift (Snapshots del Sistema)
+
+Primero instalar: `sudo apt install timeshift`
+
+```bash
+# Crear snapshot manual
+sudo timeshift --create --comments "Descripcion del estado actual"
+
+# Ver todos los snapshots
+sudo timeshift --list
+
+# Restaurar snapshot específico (te muestra lista para elegir)
+sudo timeshift --restore
+
+# Eliminar snapshot específico
+sudo timeshift --delete --snapshot '2024-01-15_10-30-00'
+```
+
+**Ejemplo de uso:**
+```bash
+# Antes de dar acceso a alguien
+sudo timeshift --create --comments "Antes de invitado"
+
+# Si algo se daña, ver snapshots disponibles
+sudo timeshift --list
+
+# Restaurar (te pregunta cuál elegir)
+sudo timeshift --restore
+```
+
+> Restaura: sistema, programas, configs. NO restaura bases de datos (usar backup de BD aparte).
 
 ---
 

@@ -22,6 +22,16 @@
 | SSH | `ssh david@192.168.1.182` |
 | Zona horaria | America/Bogota |
 
+## Tailscale (VPN)
+
+| Dato | Valor |
+|------|-------|
+| IP Tailscale | `100.112.16.24` |
+| SSH Remoto | `ssh david@100.112.16.24` |
+| Hostname | `homeserver` |
+
+> Permite acceso SSH desde cualquier lugar sin abrir puertos en el router.
+
 ## Stack
 
 | Software | Version |

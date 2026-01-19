@@ -1,9 +1,17 @@
 # Server Daily - Referencia Rápida
 
 ## Conectar
+
+**Red local:**
 ```bash
 ssh david@192.168.1.182
 ```
+
+**Remoto (Tailscale):**
+```bash
+ssh david@100.112.16.24
+```
+> Funciona desde cualquier lugar con Tailscale instalado.
 
 ---
 

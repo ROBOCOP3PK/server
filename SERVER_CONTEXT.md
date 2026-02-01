@@ -42,6 +42,7 @@
 | Node.js | 20.19.6 |
 | NPM | 10.8.2 |
 | Git | 2.34.1 |
+| Docker | 29.2.0 |
 | SQLite | Principal |
 | MySQL | 8.0 (opcional) |
 
@@ -72,11 +73,13 @@
 ├── finanzas/
 ├── tienda/
 ├── domicilios/
+├── deepdev/
 └── [nuevas-apps]/
 
 /etc/nginx/sites-available/   # Configs Nginx
 /etc/cloudflared/             # Config tunnel
 /home/david/archivos/         # FileBrowser storage
+/home/david/n8n-docker/       # Config n8n (Docker)
 ```
 
 ## Servicios
@@ -88,6 +91,8 @@
 | PHP-FPM | socket | Activo |
 | FileBrowser | 8080 | Activo |
 | cloudflared | - | Activo |
+| Docker | - | Activo |
+| n8n (Docker) | 5678 | Activo |
 
 ## Seguridad
 

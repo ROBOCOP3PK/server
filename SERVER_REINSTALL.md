@@ -126,6 +126,31 @@ sudo apt install lm-sensors -y
 sudo sensors-detect  # Enter a todo
 ```
 
+### 4.7 Docker (Opcional - para n8n y otros servicios)
+```bash
+# Instalar dependencias
+sudo apt install -y ca-certificates curl gnupg lsb-release
+
+# Agregar repositorio de Docker
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Instalar Docker
+sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+# Permitir usar Docker sin sudo
+sudo usermod -aG docker $USER
+
+# Cerrar sesión y volver a entrar, luego verificar:
+docker --version
+docker run hello-world
+```
+
+> Docker permite correr aplicaciones en contenedores aislados. Útil para n8n, bases de datos de prueba, etc. No afecta las apps Laravel existentes.
+
 ---
 
 ## 5. Cloudflare Tunnel
@@ -224,6 +249,59 @@ sudo systemctl daemon-reload
 sudo systemctl enable filebrowser
 sudo systemctl start filebrowser
 ```
+
+---
+
+## 6.5 n8n (Automatización - Requiere Docker)
+
+### 6.5.1 Crear configuración
+```bash
+mkdir -p ~/n8n-docker
+cd ~/n8n-docker
+
+cat > docker-compose.yml << 'EOF'
+services:
+  n8n:
+    image: n8nio/n8n
+    container_name: n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=n8n.davidhub.space
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=https
+      - WEBHOOK_URL=https://n8n.davidhub.space/
+      - GENERIC_TIMEZONE=America/Bogota
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+volumes:
+  n8n_data:
+EOF
+```
+
+### 6.5.2 Iniciar n8n
+```bash
+docker compose up -d
+```
+
+### 6.5.3 Exponer con Cloudflare Tunnel
+```bash
+# Crear registro DNS
+cloudflared tunnel route dns finanzas n8n.davidhub.space
+
+# Agregar al config del túnel
+sudo nano /etc/cloudflared/config.yml
+# Agregar antes de "- service: http_status:404":
+#   - hostname: n8n.davidhub.space
+#     service: http://localhost:5678
+
+# Reiniciar túnel
+sudo systemctl restart cloudflared
+```
+
+**Acceso:** https://n8n.davidhub.space
 
 ---
 

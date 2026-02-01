@@ -182,6 +182,69 @@ sensors
 
 ---
 
+## Docker y n8n
+
+### Comandos Docker
+```bash
+# Ver contenedores corriendo
+docker ps
+
+# Ver todos los contenedores (incluye detenidos)
+docker ps -a
+
+# Ver logs de un contenedor
+docker logs nombre-contenedor
+
+# Reiniciar contenedor
+docker restart nombre-contenedor
+
+# Detener contenedor
+docker stop nombre-contenedor
+
+# Eliminar contenedor
+docker rm nombre-contenedor
+
+# Ver imágenes descargadas
+docker images
+
+# Eliminar imagen
+docker rmi nombre-imagen
+
+# Espacio usado por Docker
+docker system df
+
+# Limpiar recursos no usados
+docker system prune
+```
+
+### n8n (Automatización)
+```bash
+# Ir a carpeta de n8n
+cd ~/n8n-docker
+
+# Iniciar n8n
+docker compose up -d
+
+# Detener n8n
+docker compose down
+
+# Ver logs de n8n
+docker logs n8n -f
+
+# Reiniciar n8n
+docker compose restart
+
+# Actualizar n8n a última versión
+docker compose pull
+docker compose up -d
+```
+
+**Acceso:** https://n8n.davidhub.space (puerto 5678)
+
+**Ubicación config:** `~/n8n-docker/docker-compose.yml`
+
+---
+
 ## Timeshift (Snapshots del Sistema)
 
 Primero instalar: `sudo apt install timeshift`
@@ -226,14 +289,19 @@ sudo timeshift --restore
 | Página en blanco | `tail -f storage/logs/laravel.log` |
 | Assets no cargan | `npm run build` |
 | Túnel no conecta | `sudo systemctl restart cloudflared` |
+| n8n no responde | `cd ~/n8n-docker && docker compose restart` |
+| Docker sin permisos | Cerrar sesión y volver a entrar (grupo docker) |
+| Contenedor no inicia | `docker logs nombre-contenedor` |
 
 ---
 
 ## Apps Activas
 
-| App | URL |
-|-----|-----|
-| Finanzas | https://finanzas.davidhub.space |
-| Tienda | https://tienda.davidhub.space |
-| Domicilios | https://domicilios.davidhub.space |
-| Archivos | https://archivos.davidhub.space |
+| App | URL | Tipo |
+|-----|-----|------|
+| Finanzas | https://finanzas.davidhub.space | Laravel |
+| Tienda | https://tienda.davidhub.space | Laravel |
+| DeepDev | https://deepdev.davidhub.space | Laravel |
+| Domicilios | https://domicilios.davidhub.space | Laravel |
+| Archivos | https://archivos.davidhub.space | FileBrowser |
+| n8n | https://n8n.davidhub.space | Docker |

@@ -105,12 +105,23 @@ sudo nginx -t && sudo systemctl reload nginx
 ```
 
 ### Cloudflare Tunnel
+
+**1. Crear registro DNS (CNAME) desde consola:**
+```bash
+cloudflared tunnel route dns finanzas nombre-app.davidhub.space
+```
+> Esto crea el CNAME en Cloudflare automáticamente. No necesitas entrar al dashboard web.
+
+**2. Agregar hostname al config:**
 ```bash
 sudo nano /etc/cloudflared/config.yml
 # Agregar antes de "- service: http_status:404":
 #   - hostname: nombre-app.davidhub.space
 #     service: http://localhost:80
+```
 
+**3. Reiniciar túnel:**
+```bash
 sudo systemctl restart cloudflared
 ```
 
